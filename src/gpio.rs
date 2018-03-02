@@ -11,6 +11,19 @@ pub trait GpioExt {
     fn split(self) -> Self::Parts;
 }
 
+pub struct AF0;
+pub struct AF1;
+pub struct AF2;
+pub struct AF3;
+pub struct AF4;
+pub struct AF5;
+pub struct AF6;
+pub struct AF7;
+
+pub struct Alternate<MODE> {
+    _mode: PhantomData<MODE>,
+}
+
 /// Input mode (type state)
 pub struct Input<MODE> {
     _mode: PhantomData<MODE>,
@@ -48,8 +61,8 @@ macro_rules! gpio {
             use stm32f042::$GPIOX;
 
             use super::{
-                Floating, GpioExt, Input, OpenDrain, Output,
-                PullDown, PullUp, PushPull,
+                Alternate, Floating, GpioExt, Input, OpenDrain, Output,
+                PullDown, PullUp, PushPull, AF0, AF1, AF2, AF3, AF4, AF5, AF6, AF7,
             };
 
             /// GPIO parts
@@ -110,6 +123,28 @@ macro_rules! gpio {
                 }
             }
 
+            fn _set_alternate_mode (index:usize, mode: u32)
+            {
+                let offset = 2 * index;
+                let offset2 = 4 * index;
+                unsafe {
+                    &(*$GPIOX::ptr()).moder.modify(|r, w| {
+                        w.bits((r.bits() & !(0b11 << offset)) | (0b10 << offset))
+                    });
+                    if offset2 <= 28 {
+                        &(*$GPIOX::ptr()).afrl.modify(|r, w| {
+                            w.bits((r.bits() & !(0b1111 << offset2)) | (mode << offset2))
+                        });
+                    } else
+                    {
+                        let offset2 = offset2 - 32;
+                        &(*$GPIOX::ptr()).afrh.modify(|r, w| {
+                            w.bits((r.bits() & !(0b1111 << offset2)) | (mode << offset2))
+                        });
+                    }
+                }
+            }
+
             $(
                 /// Pin
                 pub struct $PXi<MODE> {
@@ -117,6 +152,70 @@ macro_rules! gpio {
                 }
 
                 impl<MODE> $PXi<MODE> {
+                    /// Configures the pin to operate in AF0 mode
+                    pub fn into_alternate_af0(
+                        self,
+                    ) -> $PXi<Alternate<AF0>> {
+                        _set_alternate_mode($i, 0);
+                        $PXi { _mode: PhantomData }
+                    }
+
+                    /// Configures the pin to operate in AF1 mode
+                    pub fn into_alternate_af1(
+                        self,
+                    ) -> $PXi<Alternate<AF1>> {
+                        _set_alternate_mode($i, 1);
+                        $PXi { _mode: PhantomData }
+                    }
+
+                    /// Configures the pin to operate in AF2 mode
+                    pub fn into_alternate_af2(
+                        self,
+                    ) -> $PXi<Alternate<AF2>> {
+                        _set_alternate_mode($i, 2);
+                        $PXi { _mode: PhantomData }
+                    }
+
+                    /// Configures the pin to operate in AF3 mode
+                    pub fn into_alternate_af3(
+                        self,
+                    ) -> $PXi<Alternate<AF3>> {
+                        _set_alternate_mode($i, 3);
+                        $PXi { _mode: PhantomData }
+                    }
+
+                    /// Configures the pin to operate in AF4 mode
+                    pub fn into_alternate_af4(
+                        self,
+                    ) -> $PXi<Alternate<AF4>> {
+                        _set_alternate_mode($i, 4);
+                        $PXi { _mode: PhantomData }
+                    }
+
+                    /// Configures the pin to operate in AF5 mode
+                    pub fn into_alternate_af5(
+                        self,
+                    ) -> $PXi<Alternate<AF5>> {
+                        _set_alternate_mode($i, 5);
+                        $PXi { _mode: PhantomData }
+                    }
+
+                    /// Configures the pin to operate in AF6 mode
+                    pub fn into_alternate_af6(
+                        self,
+                    ) -> $PXi<Alternate<AF6>> {
+                        _set_alternate_mode($i, 6);
+                        $PXi { _mode: PhantomData }
+                    }
+
+                    /// Configures the pin to operate in AF7 mode
+                    pub fn into_alternate_af7(
+                        self,
+                    ) -> $PXi<Alternate<AF7>> {
+                        _set_alternate_mode($i, 7);
+                        $PXi { _mode: PhantomData }
+                    }
+
                     /// Configures the pin to operate as a floating input pin
                     pub fn into_floating_input(
                         self,
