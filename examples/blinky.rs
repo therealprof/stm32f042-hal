@@ -8,11 +8,7 @@ use hal::stm32f042;
 
 fn main() {
     if let Some(p) = stm32f042::Peripherals::take() {
-        let rcc = p.RCC;
         let gpioa = p.GPIOA.split();
-
-        /* Enable clock for SYSCFG, else everything will behave funky! */
-        rcc.apb2enr.modify(|_, w| w.syscfgen().set_bit());
 
         /* (Re-)configure PA1 as output */
         let mut led = gpioa.pa1.into_push_pull_output();
