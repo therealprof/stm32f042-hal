@@ -14,9 +14,6 @@ fn main() {
         /* Enable clock for SYSCFG, else everything will behave funky! */
         rcc.apb2enr.modify(|_, w| w.syscfgen().set_bit());
 
-        /* Enable clock for GPIO Port A */
-        rcc.ahbenr.modify(|_, w| w.iopaen().set_bit());
-
         /* (Re-)configure PA1 as output */
         let mut led = gpioa.pa1.into_push_pull_output();
 

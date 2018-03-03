@@ -4,7 +4,7 @@ use core::marker::PhantomData;
 
 /// Extension trait to split a GPIO peripheral in independent pins and registers
 pub trait GpioExt {
-    /// The to split the GPIO into
+    /// The parts to split the GPIO into
     type Parts;
 
     /// Splits the GPIO block into independent pins and registers
@@ -50,7 +50,7 @@ pub struct Output<MODE> {
 pub struct PushPull;
 
 macro_rules! gpio {
-    ($GPIOX:ident, $gpiox:ident, $PXx:ident, [
+    ($GPIOX:ident, $gpiox:ident, $iopxenr:ident, $PXx:ident, [
         $($PXi:ident: ($pxi:ident, $i:expr, $MODE:ty),)+
     ]) => {
         /// GPIO
@@ -60,6 +60,7 @@ macro_rules! gpio {
             use hal::digital::{InputPin, OutputPin};
             use stm32f042::$GPIOX;
 
+            use stm32f042::RCC;
             use super::{
                 Alternate, Floating, GpioExt, Input, OpenDrain, Output,
                 PullDown, PullUp, PushPull, AF0, AF1, AF2, AF3, AF4, AF5, AF6, AF7,
@@ -77,6 +78,10 @@ macro_rules! gpio {
                 type Parts = Parts;
 
                 fn split(self) -> Parts {
+                    // NOTE(unsafe) This executes only during initialisation
+                    let rcc = unsafe { &(*RCC::ptr()) };
+                    rcc.ahbenr.modify(|_, w| w.$iopxenr().set_bit());
+
                     Parts {
                         $(
                             $pxi: $PXi { _mode: PhantomData },
@@ -385,7 +390,7 @@ macro_rules! gpio {
     }
 }
 
-gpio!(GPIOA, gpioa, PA, [
+gpio!(GPIOA, gpioa, iopaen, PA, [
     PA0: (pa0, 0, Input<Floating>),
     PA1: (pa1, 1, Input<Floating>),
     PA2: (pa2, 2, Input<Floating>),
@@ -404,7 +409,7 @@ gpio!(GPIOA, gpioa, PA, [
     PA15: (pa15, 15, Input<Floating>),
 ]);
 
-gpio!(GPIOB, gpiob, PB, [
+gpio!(GPIOB, gpiob, iopaen, PB, [
     PB0: (pb0, 0, Input<Floating>),
     PB1: (pb1, 1, Input<Floating>),
     PB2: (pb2, 2, Input<Floating>),
@@ -423,13 +428,13 @@ gpio!(GPIOB, gpiob, PB, [
     PB15: (pb15, 15, Input<Floating>),
 ]);
 
-gpio!(GPIOC, gpioc, PC, [
+gpio!(GPIOC, gpioc, iopaen, PC, [
     PC13: (pc13, 13, Input<Floating>),
     PC14: (pc14, 14, Input<Floating>),
     PC15: (pc15, 15, Input<Floating>),
 ]);
 
-gpio!(GPIOF, gpiof, PF, [
+gpio!(GPIOF, gpiof, iopfen, PF, [
     PF0: (pf0, 0, Input<Floating>),
     PF1: (pf1, 1, Input<Floating>),
     PF11: (pf11, 11, Input<Floating>),
