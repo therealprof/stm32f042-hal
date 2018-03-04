@@ -15,3 +15,6 @@ pub extern crate stm32f042;
 
 pub mod gpio;
 pub mod prelude;
+pub mod rcc;
+pub mod serial;
+pub mod time;
