@@ -13,8 +13,9 @@ pub extern crate embedded_hal as hal;
 extern crate nb;
 pub extern crate stm32f042;
 
-pub mod i2c;
+pub mod delay;
 pub mod gpio;
+pub mod i2c;
 pub mod prelude;
 pub mod rcc;
 pub mod serial;
