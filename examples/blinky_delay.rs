@@ -16,9 +16,13 @@ fn main() {
         /* (Re-)configure PA1 as output */
         let mut led = gpioa.pa1.into_push_pull_output();
 
+        /* Constrain clocking registers */
         let mut rcc = p.RCC.constrain();
+
+        /* Configure clock to 8 MHz (i.e. the default) and freeze it */
         let clocks = rcc.cfgr.sysclk(8.mhz()).freeze();
 
+        /* Get delay provider */
         let mut delay = Delay::new(cp.SYST, clocks);
 
         loop {
