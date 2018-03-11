@@ -10,8 +10,8 @@ use time::{KiloHertz, U32Ext};
 use core::cmp;
 
 /// I2C abstraction
-pub struct I2c<USART, PINS> {
-    i2c: USART,
+pub struct I2c<I2C, PINS> {
+    i2c: I2C,
     pins: PINS,
 }
 
