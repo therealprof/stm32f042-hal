@@ -436,7 +436,7 @@ gpio!(GPIOA, gpioa, iopaen, PA, [
     PA15: (pa15, 15, Input<Floating>),
 ]);
 
-gpio!(GPIOB, gpiob, iopaen, PB, [
+gpio!(GPIOB, gpiob, iopben, PB, [
     PB0: (pb0, 0, Input<Floating>),
     PB1: (pb1, 1, Input<Floating>),
     PB2: (pb2, 2, Input<Floating>),
@@ -455,7 +455,7 @@ gpio!(GPIOB, gpiob, iopaen, PB, [
     PB15: (pb15, 15, Input<Floating>),
 ]);
 
-gpio!(GPIOC, gpioc, iopaen, PC, [
+gpio!(GPIOC, gpioc, iopcen, PC, [
     PC13: (pc13, 13, Input<Floating>),
     PC14: (pc14, 14, Input<Floating>),
     PC15: (pc15, 15, Input<Floating>),
