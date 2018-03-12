@@ -38,8 +38,13 @@ pub trait Pins<USART> {}
 
 impl Pins<USART1> for (PA9<Alternate<AF1>>, PA10<Alternate<AF1>>) {}
 impl Pins<USART1> for (PB6<Alternate<AF0>>, PB7<Alternate<AF0>>) {}
+impl Pins<USART1> for (PA9<Alternate<AF1>>, PB7<Alternate<AF0>>) {}
+impl Pins<USART1> for (PB6<Alternate<AF0>>, PA10<Alternate<AF1>>) {}
+
 impl Pins<USART2> for (PA2<Alternate<AF1>>, PA3<Alternate<AF1>>) {}
+impl Pins<USART2> for (PA2<Alternate<AF1>>, PA15<Alternate<AF1>>) {}
 impl Pins<USART2> for (PA14<Alternate<AF1>>, PA15<Alternate<AF1>>) {}
+impl Pins<USART2> for (PA14<Alternate<AF1>>, PA3<Alternate<AF1>>) {}
 
 /// Serial abstraction
 pub struct Serial<USART, PINS> {
