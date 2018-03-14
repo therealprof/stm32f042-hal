@@ -10,7 +10,8 @@ extern crate bare_metal;
 extern crate cast;
 extern crate cortex_m;
 pub extern crate embedded_hal as hal;
-extern crate nb;
+#[macro_use(block)]
+pub extern crate nb;
 pub extern crate stm32f042;
 
 pub mod delay;
