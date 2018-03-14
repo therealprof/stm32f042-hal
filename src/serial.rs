@@ -1,13 +1,16 @@
 use core::marker::PhantomData;
 use core::ptr;
+use core::fmt::{Write, Result};
 
 use hal;
+use hal::prelude::*;
 use nb;
+
 use stm32f042::{USART1, USART2, RCC};
 
 use gpio::gpioa::{PA10, PA14, PA15, PA2, PA3, PA9};
 use gpio::gpiob::{PB6, PB7};
-use gpio::{Alternate, AF0, AF1};
+use gpio::{AF0, AF1, Alternate};
 use rcc::Clocks;
 use time::Bps;
 
@@ -247,5 +250,18 @@ impl hal::serial::Write<u8> for Tx<USART2> {
         } else {
             Err(nb::Error::WouldBlock)
         }
+    }
+}
+
+impl<USART> Write for Tx<USART>
+where
+    Tx<USART>: hal::serial::Write<u8>,
+{
+    fn write_str(&mut self, s: &str) -> Result {
+        let _ = s.as_bytes()
+            .into_iter()
+            .map(|c| block!(self.write(*c)))
+            .last();
+        Ok(())
     }
 }
