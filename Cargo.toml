@@ -16,7 +16,7 @@ keywords = [
 license = "0BSD"
 name = "stm32f042-hal"
 repository = "https://github.com/therealprof/stm32f042-hal"
-version = "0.3.4"
+version = "0.3.5"
 
 [dependencies]
 bare-metal = "0.1.1"
