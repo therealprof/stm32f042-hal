@@ -49,9 +49,10 @@ impl Pins<SPI1>
 }
 
 impl<PINS> Spi<SPI1, PINS> {
-    pub fn spi1(spi: SPI1, pins: PINS, mode: Mode, speed: Hertz, clocks: Clocks) -> Self
+    pub fn spi1<F>(spi: SPI1, pins: PINS, mode: Mode, speed: F, clocks: Clocks) -> Self
     where
         PINS: Pins<SPI1>,
+        F: Into<Hertz>,
     {
         // NOTE(unsafe) This executes only during initialisation
         let rcc = unsafe { &(*RCC::ptr()) };
@@ -69,7 +70,7 @@ impl<PINS> Spi<SPI1, PINS> {
         // disable SS output
         spi.cr2.write(|w| w.ssoe().clear_bit());
 
-        let br = match clocks.pclk().0 / speed.0 {
+        let br = match clocks.pclk().0 / speed.into().0 {
             0 => unreachable!(),
             1...2 => 0b000,
             3...5 => 0b001,
