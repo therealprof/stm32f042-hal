@@ -8,7 +8,7 @@ use rcc::Clocks;
 use stm32f042::{SPI1, RCC};
 
 use gpio::gpioa::{PA5, PA6, PA7};
-use gpio::gpiob::{PB2, PB4, PB5};
+use gpio::gpiob::{PB3, PB4, PB5};
 use gpio::{AF0, Alternate};
 use time::{Hertz};
 
@@ -42,16 +42,17 @@ impl Pins<SPI1>
 }
 impl Pins<SPI1>
     for (
-        PB2<Alternate<AF0>>,
+        PB3<Alternate<AF0>>,
         PB4<Alternate<AF0>>,
         PB5<Alternate<AF0>>,
     ) {
 }
 
 impl<PINS> Spi<SPI1, PINS> {
-    pub fn spi1(spi: SPI1, pins: PINS, mode: Mode, speed: Hertz, clocks: Clocks) -> Self
+    pub fn spi1<F>(spi: SPI1, pins: PINS, mode: Mode, speed: F, clocks: Clocks) -> Self
     where
         PINS: Pins<SPI1>,
+        F: Into<Hertz>,
     {
         // NOTE(unsafe) This executes only during initialisation
         let rcc = unsafe { &(*RCC::ptr()) };
@@ -66,10 +67,15 @@ impl<PINS> Spi<SPI1, PINS> {
         /* Make sure the SPI unit is disabled so we can configure it */
         spi.cr1.modify(|_, w| w.spe().clear_bit());
 
-        // disable SS output
-        spi.cr2.write(|w| w.ssoe().clear_bit());
+        // FRXTH: 8-bit threshold on RX FIFO
+        // DS: 8-bit data size
+        // SSOE: cleared to disable SS output
+        //
+        // NOTE(unsafe): DS reserved bit patterns are 0b0000, 0b0001, and 0b0010. 0b0111 is valid
+        // (reference manual, pp 804)
+        spi.cr2.write(|w| unsafe { w.frxth().set_bit().ds().bits(0b0111).ssoe().clear_bit() });
 
-        let br = match clocks.pclk().0 / speed.0 {
+        let br = match clocks.pclk().0 / speed.into().0 {
             0 => unreachable!(),
             1...2 => 0b000,
             3...5 => 0b001,
@@ -136,9 +142,7 @@ impl<PINS> ::hal::spi::FullDuplex<u8> for Spi<SPI1, PINS> {
             // reading a half-word)
             return Ok(unsafe { ptr::read_volatile(&self.spi.dr as *const _ as *const u8) });
         } else {
-            // FIXME: Should use WouldBlock in case of reading is supposed to work
-            //nb::Error::WouldBlock
-            return Ok(0);
+            nb::Error::WouldBlock
         })
     }
 
