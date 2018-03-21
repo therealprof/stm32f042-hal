@@ -8,7 +8,7 @@ use rcc::Clocks;
 use stm32f042::{SPI1, RCC};
 
 use gpio::gpioa::{PA5, PA6, PA7};
-use gpio::gpiob::{PB2, PB4, PB5};
+use gpio::gpiob::{PB3, PB4, PB5};
 use gpio::{AF0, Alternate};
 use time::{Hertz};
 
@@ -42,7 +42,7 @@ impl Pins<SPI1>
 }
 impl Pins<SPI1>
     for (
-        PB2<Alternate<AF0>>,
+        PB3<Alternate<AF0>>,
         PB4<Alternate<AF0>>,
         PB5<Alternate<AF0>>,
     ) {
