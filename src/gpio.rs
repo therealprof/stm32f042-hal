@@ -136,7 +136,7 @@ macro_rules! gpio {
                     &(*$GPIOX::ptr()).moder.modify(|r, w| {
                         w.bits((r.bits() & !(0b11 << offset)) | (0b10 << offset))
                     });
-                    if offset2 <= 28 {
+                    if offset2 < 32 {
                         &(*$GPIOX::ptr()).afrl.modify(|r, w| {
                             w.bits((r.bits() & !(0b1111 << offset2)) | (mode << offset2))
                         });
