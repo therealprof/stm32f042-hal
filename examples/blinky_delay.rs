@@ -1,6 +1,7 @@
 #![feature(used)]
 #![no_std]
 
+extern crate panic_abort;
 extern crate stm32f042_hal as hal;
 use hal::prelude::*;
 use hal::stm32f042;

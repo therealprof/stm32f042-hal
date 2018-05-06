@@ -2,6 +2,7 @@
 #![deny(warnings)]
 #![no_std]
 
+extern crate panic_abort;
 extern crate cortex_m;
 extern crate stm32f042_hal as hal;
 

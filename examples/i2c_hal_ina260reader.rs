@@ -2,6 +2,7 @@
 #![feature(const_fn)]
 #![no_std]
 
+extern crate panic_abort;
 extern crate embedded_hal;
 use embedded_hal::blocking::i2c::Write;
 

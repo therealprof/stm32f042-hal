@@ -2,6 +2,7 @@
 #![feature(const_fn)]
 #![no_std]
 
+extern crate panic_abort;
 extern crate cortex_m;
 extern crate embedded_hal;
 extern crate stm32f042_hal as hal;
