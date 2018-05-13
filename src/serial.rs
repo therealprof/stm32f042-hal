@@ -1,6 +1,6 @@
+use core::fmt::{Result, Write};
 use core::marker::PhantomData;
 use core::ptr;
-use core::fmt::{Write, Result};
 
 use hal;
 use hal::prelude::*;

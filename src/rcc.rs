@@ -1,7 +1,7 @@
 use core::cmp;
 
 use cast::u32;
-use stm32f042::{RCC,FLASH};
+use stm32f042::{FLASH, RCC};
 
 use time::Hertz;
 

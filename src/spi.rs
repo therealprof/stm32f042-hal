@@ -10,7 +10,7 @@ use stm32f042::{SPI1, RCC};
 use gpio::gpioa::{PA5, PA6, PA7};
 use gpio::gpiob::{PB3, PB4, PB5};
 use gpio::{AF0, Alternate};
-use time::{Hertz};
+use time::Hertz;
 
 /// SPI error
 #[derive(Debug)]
@@ -38,14 +38,16 @@ impl Pins<SPI1>
         PA5<Alternate<AF0>>,
         PA6<Alternate<AF0>>,
         PA7<Alternate<AF0>>,
-    ) {
+    )
+{
 }
 impl Pins<SPI1>
     for (
         PB3<Alternate<AF0>>,
         PB4<Alternate<AF0>>,
         PB5<Alternate<AF0>>,
-    ) {
+    )
+{
 }
 
 impl<PINS> Spi<SPI1, PINS> {
@@ -73,7 +75,8 @@ impl<PINS> Spi<SPI1, PINS> {
         //
         // NOTE(unsafe): DS reserved bit patterns are 0b0000, 0b0001, and 0b0010. 0b0111 is valid
         // (reference manual, pp 804)
-        spi.cr2.write(|w| unsafe { w.frxth().set_bit().ds().bits(0b0111).ssoe().clear_bit() });
+        spi.cr2
+            .write(|w| unsafe { w.frxth().set_bit().ds().bits(0b0111).ssoe().clear_bit() });
 
         let br = match clocks.pclk().0 / speed.into().0 {
             0 => unreachable!(),

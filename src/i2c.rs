@@ -2,12 +2,12 @@ use stm32f042::{I2C1, RCC};
 
 use hal::blocking::i2c::{Write, WriteRead};
 
+use core::cmp;
 use gpio::gpioa::{PA10, PA11, PA12, PA9};
 use gpio::gpiob::{PB10, PB11, PB13, PB14, PB6, PB7, PB8, PB9};
 use gpio::gpiof::{PF0, PF1};
 use gpio::{AF1, AF4, AF5, Alternate};
 use time::{KiloHertz, U32Ext};
-use core::cmp;
 
 /// I2C abstraction
 pub struct I2c<I2C, PINS> {
