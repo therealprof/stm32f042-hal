@@ -72,7 +72,8 @@ impl CFGR {
             Some(pllmul as u8 - 2)
         };
 
-        let hpre_bits = self.hclk
+        let hpre_bits = self
+            .hclk
             .map(|hclk| match sysclk / hclk {
                 0 => unreachable!(),
                 1 => 0b0111,
@@ -89,7 +90,8 @@ impl CFGR {
 
         let hclk = sysclk / (1 << (hpre_bits - 0b0111));
 
-        let ppre_bits = self.pclk
+        let ppre_bits = self
+            .pclk
             .map(|pclk| match hclk / pclk {
                 0 => unreachable!(),
                 1 => 0b011,

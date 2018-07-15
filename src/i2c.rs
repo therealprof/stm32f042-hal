@@ -148,7 +148,9 @@ impl<PINS> WriteRead for I2c<I2C1, PINS> {
         let mut isr;
         while {
             isr = self.i2c.isr.read();
-            isr.txis().bit_is_clear() && isr.nackf().bit_is_clear() && isr.stopf().bit_is_clear()
+            isr.txis().bit_is_clear()
+                && isr.nackf().bit_is_clear()
+                && isr.stopf().bit_is_clear()
                 && isr.tc().bit_is_clear()
         } {}
 

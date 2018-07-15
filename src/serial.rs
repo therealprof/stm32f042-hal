@@ -258,7 +258,8 @@ where
     Tx<USART>: hal::serial::Write<u8>,
 {
     fn write_str(&mut self, s: &str) -> Result {
-        let _ = s.as_bytes()
+        let _ = s
+            .as_bytes()
             .into_iter()
             .map(|c| block!(self.write(*c)))
             .last();
