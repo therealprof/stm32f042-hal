@@ -44,9 +44,9 @@ numtoa = "0.0.7"
 [features]
 default = ["rt"]
 rt = []
+
 [profile.dev]
 debug = true
-lto = true
 
 [profile.release]
 debug = true
