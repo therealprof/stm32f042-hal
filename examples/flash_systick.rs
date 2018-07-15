@@ -89,7 +89,7 @@ fn flash(state: &mut u8) {
                 led.set_high();
 
                 /* And set new state variable back to 0 */
-                *state = 1;
+                *state = 0;
             }
         }
     });
