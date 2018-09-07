@@ -1,39 +1,23 @@
-#![feature(used)]
 #![no_main]
 #![no_std]
 
-#[macro_use(entry, exception)]
+extern crate cortex_m;
 extern crate cortex_m_rt;
-
-use cortex_m_rt::ExceptionFrame;
-
 extern crate panic_abort;
 
 extern crate stm32f042_hal as hal;
+
 use hal::delay::Delay;
 use hal::gpio::*;
 use hal::prelude::*;
 
-use hal::stm32f042::*;
-
-extern crate cortex_m;
 use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::Peripherals as c_m_Peripherals;
+use cortex_m_rt::entry;
+use hal::stm32f042::*;
 
 use core::cell::RefCell;
 use core::ops::DerefMut;
-
-exception!(*, default_handler);
-
-fn default_handler(_irqn: i16) {}
-
-exception!(HardFault, hard_fault);
-
-fn hard_fault(_ef: &ExceptionFrame) -> ! {
-    loop {}
-}
-
-entry!(main);
 
 // Make out LED globally available
 static LED: Mutex<RefCell<Option<gpiob::PB3<Output<PushPull>>>>> = Mutex::new(RefCell::new(None));
@@ -44,6 +28,7 @@ static DELAY: Mutex<RefCell<Option<Delay>>> = Mutex::new(RefCell::new(None));
 // Make external interrupt registers globally available
 static INT: Mutex<RefCell<Option<EXTI>>> = Mutex::new(RefCell::new(None));
 
+#[entry]
 fn main() -> ! {
     if let (Some(p), Some(cp)) = (Peripherals::take(), c_m_Peripherals::take()) {
         let gpiob = p.GPIOB.split();

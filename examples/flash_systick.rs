@@ -1,41 +1,27 @@
-#![feature(used)]
 #![no_main]
 #![no_std]
 
-#[macro_use(entry, exception)]
+extern crate cortex_m;
 extern crate cortex_m_rt;
-
-use cortex_m_rt::ExceptionFrame;
-
 extern crate panic_abort;
+
 extern crate stm32f042_hal as hal;
+
 use hal::gpio::*;
 use hal::prelude::*;
+use hal::stm32f042;
 
-extern crate stm32f042;
-
-extern crate cortex_m;
 use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::syst::SystClkSource::Core;
 use cortex_m::peripheral::Peripherals;
+use cortex_m_rt::{entry, exception};
 
 use core::cell::RefCell;
 use core::ops::DerefMut;
 
 static GPIO: Mutex<RefCell<Option<gpioa::PA1<Output<PushPull>>>>> = Mutex::new(RefCell::new(None));
 
-exception!(*, default_handler);
-
-fn default_handler(_irqn: i16) {}
-
-exception!(HardFault, hard_fault);
-
-fn hard_fault(_ef: &ExceptionFrame) -> ! {
-    loop {}
-}
-
-entry!(main);
-
+#[entry]
 fn main() -> ! {
     if let (Some(p), Some(cp)) = (stm32f042::Peripherals::take(), Peripherals::take()) {
         let gpioa = p.GPIOA.split();
@@ -71,12 +57,14 @@ fn main() -> ! {
 
 /* Define an exception, i.e. function to call when exception occurs. Here if our SysTick timer
  * trips the flash function will be called and the specified stated passed in via argument */
-exception!(SysTick, flash, state: u8 = 1);
+//, flash, state: u8 = 1);
+#[exception]
+fn SysTick() -> ! {
+    static mut state: u8 = 1;
 
-fn flash(state: &mut u8) {
     /* Enter critical section */
     cortex_m::interrupt::free(|cs| {
-        if let &mut Some(ref mut led) = GPIO.borrow(cs).borrow_mut().deref_mut() {
+        if let Some(ref mut led) = *GPIO.borrow(cs).borrow_mut().deref_mut() {
             /* Check state variable, keep LED off most of the time and turn it on every 10th tick */
             if *state < 10 {
                 /* If set turn off the LED */

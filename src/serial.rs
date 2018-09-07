@@ -6,11 +6,11 @@ use hal;
 use hal::prelude::*;
 use nb;
 
-use stm32f042::{USART1, USART2, RCC};
+use stm32f042::{RCC, USART1, USART2};
 
 use gpio::gpioa::{PA10, PA14, PA15, PA2, PA3, PA9};
 use gpio::gpiob::{PB6, PB7};
-use gpio::{AF0, AF1, Alternate};
+use gpio::{Alternate, AF0, AF1};
 use rcc::Clocks;
 use time::Bps;
 

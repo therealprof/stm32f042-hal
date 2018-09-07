@@ -6,7 +6,7 @@ use core::cmp;
 use gpio::gpioa::{PA10, PA11, PA12, PA9};
 use gpio::gpiob::{PB10, PB11, PB13, PB14, PB6, PB7, PB8, PB9};
 use gpio::gpiof::{PF0, PF1};
-use gpio::{AF1, AF4, AF5, Alternate};
+use gpio::{Alternate, AF1, AF4, AF5};
 use time::{KiloHertz, U32Ext};
 
 /// I2C abstraction
@@ -98,12 +98,12 @@ impl<PINS> I2c<I2C1, PINS> {
         (self.i2c, self.pins)
     }
 
-    fn send_byte(&self, byte: &u8) -> Result<(), Error> {
+    fn send_byte(&self, byte: u8) -> Result<(), Error> {
         /* Wait until we're ready for sending */
         while self.i2c.isr.read().txis().bit_is_clear() {}
 
         /* Push out a byte of data */
-        self.i2c.txdr.write(|w| unsafe { w.bits(u32::from(*byte)) });
+        self.i2c.txdr.write(|w| unsafe { w.bits(u32::from(byte)) });
 
         /* If we received a NACK, then this is an error */
         if self.i2c.isr.read().nackf().bit_is_set() {
@@ -163,7 +163,7 @@ impl<PINS> WriteRead for I2c<I2C1, PINS> {
         }
 
         for c in bytes {
-            self.send_byte(c)?;
+            self.send_byte(*c)?;
         }
 
         /* Wait until data was sent */
@@ -221,7 +221,7 @@ impl<PINS> Write for I2c<I2C1, PINS> {
         self.i2c.cr2.modify(|_, w| w.start().set_bit());
 
         for c in bytes {
-            self.send_byte(c)?;
+            self.send_byte(*c)?;
         }
 
         /* Fallthrough is success */
