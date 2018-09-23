@@ -285,12 +285,33 @@ macro_rules! gpio {
                                 w.bits(r.bits() | (0b1 << $i))
                          })};
 
-
                         $PXi { _mode: PhantomData }
                     }
 
                     /// Configures the pin to operate as an push pull output pin
                     pub fn into_push_pull_output(
+                        self,
+                    ) -> $PXi<Output<PushPull>> {
+                        let offset = 2 * $i;
+
+                        unsafe {
+                            &(*$GPIOX::ptr()).moder.modify(|r, w| {
+                                w.bits((r.bits() & !(0b11 << offset)) | (0b01 << offset))
+                            });
+                            &(*$GPIOX::ptr()).pupdr.modify(|r, w| {
+                                w.bits((r.bits() & !(0b11 << offset)) | (0b00 << offset))
+                            });
+                            &(*$GPIOX::ptr()).otyper.modify(|r, w| {
+                                w.bits(r.bits() & !(0b1 << $i))
+                            });
+                        }
+
+                        $PXi { _mode: PhantomData }
+                    }
+
+                    /// Configures the pin to operate as an push pull output pin with quick fall
+                    /// and rise times
+                    pub fn into_push_pull_output_hs(
                         self,
                     ) -> $PXi<Output<PushPull>> {
                         let offset = 2 * $i;
@@ -304,8 +325,11 @@ macro_rules! gpio {
                             });
                             &(*$GPIOX::ptr()).otyper.modify(|r, w| {
                                 w.bits(r.bits() & !(0b1 << $i))
-                         })};
-
+                            });
+                            &(*$GPIOX::ptr()).ospeedr.modify(|r, w| {
+                                w.bits(r.bits() & !(0b1 << $i))
+                            }
+                         )};
 
                         $PXi { _mode: PhantomData }
                     }
