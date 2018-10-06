@@ -76,30 +76,23 @@ fn main() -> ! {
             let config = (u16::from(data[0]) << 8) | u16::from(data[1]);
 
             let mut buffer = [0u8; 10];
-            let count_start = config.numtoa(10, &mut buffer);
-
-            let _ = ssd1306_print_bytes(&mut i2c, &buffer[count_start..]);
-
+            let _ = ssd1306_print_bytes(&mut i2c, config.numtoa(10, &mut buffer));
             let _ = ssd1306_pos(&mut i2c, 0, 1);
 
             let mut data = [0; 2];
             let _ = i2c.write_read(0x40, &[0x02], &mut data);
-            let voltage = ((u32::from(data[0]) << 8) | u32::from(data[1])) * 1250;
+            let mut voltage = ((u32::from(data[0]) << 8) | u32::from(data[1])) * 1250;
 
-            let mut buffer = [0u8; 10];
-            let count_start = voltage.numtoa(10, &mut buffer);
-            let _ = ssd1306_print_bytes(&mut i2c, &buffer[count_start..]);
+            let _ = ssd1306_print_bytes(&mut i2c, voltage.numtoa(10, &mut buffer));
             let _ = ssd1306_print_bytes(&mut i2c, b"uV     ");
 
             let _ = ssd1306_pos(&mut i2c, 0, 2);
 
             let mut data = [0; 2];
             let _ = i2c.write_read(0x40, &[0x01], &mut data);
-            let voltage = ((u32::from(data[0]) << 8) | u32::from(data[1])) * 1250;
+            voltage = ((u32::from(data[0]) << 8) | u32::from(data[1])) * 1250;
 
-            let mut buffer = [0u8; 10];
-            let count_start = voltage.numtoa(10, &mut buffer);
-            let _ = ssd1306_print_bytes(&mut i2c, &buffer[count_start..]);
+            let _ = ssd1306_print_bytes(&mut i2c, voltage.numtoa(10, &mut buffer));
             let _ = ssd1306_print_bytes(&mut i2c, b"uA     ");
         }
     }
