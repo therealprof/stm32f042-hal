@@ -38,7 +38,7 @@ version = "0.6.2"
 
 [dev-dependencies]
 ina260 = "0.2.2"
-numtoa = "0.1.0"
+numtoa = "0.2.0"
 panic-abort = "0.3.0"
 
 [features]

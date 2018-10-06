@@ -60,14 +60,12 @@ fn main() -> ! {
 
             /* Read and print voltage */
             let voltage = ina260.voltage().unwrap();
-            let count_start = voltage.numtoa(10, &mut buffer);
-            let _ = tx.write_str(unsafe { core::str::from_utf8_unchecked(&buffer[count_start..]) });
+            let _ = tx.write_str(unsafe { core::str::from_utf8_unchecked(voltage.numtoa(10, &mut buffer)) });
             let _ = tx.write_str("uV\n\r");
 
             /* Read and print current */
             let current = ina260.current().unwrap();
-            let count_start = current.numtoa(10, &mut buffer);
-            let _ = tx.write_str(unsafe { core::str::from_utf8_unchecked(&buffer[count_start..]) });
+            let _ = tx.write_str(unsafe { core::str::from_utf8_unchecked(current.numtoa(10, &mut buffer)) });
             let _ = tx.write_str("uA\n\r");
         }
     }
