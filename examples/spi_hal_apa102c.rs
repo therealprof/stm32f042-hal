@@ -10,7 +10,7 @@ extern crate stm32f042_hal as hal;
 use hal::prelude::*;
 use hal::spi::Spi;
 use hal::spi::{Mode, Phase, Polarity};
-use hal::stm32f042;
+use hal::stm32;
 
 use cortex_m_rt::entry;
 
@@ -21,7 +21,7 @@ fn main() -> ! {
         phase: Phase::CaptureOnSecondTransition,
     };
 
-    if let Some(p) = stm32f042::Peripherals::take() {
+    if let Some(p) = stm32::Peripherals::take() {
         let mut rcc = p.RCC.constrain();
         let clocks = rcc.cfgr.freeze();
         let mut gpioa = p.GPIOA.split();

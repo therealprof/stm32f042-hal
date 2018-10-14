@@ -1,7 +1,7 @@
 use core::cmp;
 
 use cast::u32;
-use stm32f042::{FLASH, RCC};
+use stm32::{FLASH, RCC};
 
 use time::Hertz;
 
@@ -85,7 +85,8 @@ impl CFGR {
                 96...191 => 0b1101,
                 192...383 => 0b1110,
                 _ => 0b1111,
-            }).unwrap_or(0b0111);
+            })
+            .unwrap_or(0b0111);
 
         let hclk = sysclk / (1 << (hpre_bits - 0b0111));
 
@@ -98,7 +99,8 @@ impl CFGR {
                 3...5 => 0b101,
                 6...11 => 0b110,
                 _ => 0b111,
-            }).unwrap_or(0b011);
+            })
+            .unwrap_or(0b011);
 
         let ppre: u8 = 1 << (ppre_bits - 0b011);
         let pclk = hclk / u32(ppre);

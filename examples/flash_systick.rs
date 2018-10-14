@@ -9,7 +9,7 @@ extern crate stm32f042_hal as hal;
 
 use hal::gpio::*;
 use hal::prelude::*;
-use hal::stm32f042;
+use hal::stm32;
 
 use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::syst::SystClkSource::Core;
@@ -23,7 +23,7 @@ static GPIO: Mutex<RefCell<Option<gpioa::PA1<Output<PushPull>>>>> = Mutex::new(R
 
 #[entry]
 fn main() -> ! {
-    if let (Some(p), Some(cp)) = (stm32f042::Peripherals::take(), Peripherals::take()) {
+    if let (Some(p), Some(cp)) = (stm32::Peripherals::take(), Peripherals::take()) {
         let gpioa = p.GPIOA.split();
         let mut rcc = p.RCC.constrain();
         let _ = rcc.cfgr.sysclk(48.mhz()).freeze();

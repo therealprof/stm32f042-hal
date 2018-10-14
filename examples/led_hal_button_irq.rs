@@ -5,6 +5,7 @@ extern crate cortex_m;
 extern crate cortex_m_rt;
 extern crate panic_abort;
 
+#[macro_use]
 extern crate stm32f042_hal as hal;
 
 use hal::delay::Delay;
@@ -14,15 +15,17 @@ use hal::prelude::*;
 use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::Peripherals as c_m_Peripherals;
 use cortex_m_rt::entry;
-use hal::stm32f042::*;
+
+pub use hal::stm32;
+pub use hal::stm32::*;
 
 use core::cell::RefCell;
 use core::ops::DerefMut;
 
-// Make out LED globally available
+// Make our LED globally available
 static LED: Mutex<RefCell<Option<gpiob::PB3<Output<PushPull>>>>> = Mutex::new(RefCell::new(None));
 
-// Make out delay provider globally available
+// Make our delay provider globally available
 static DELAY: Mutex<RefCell<Option<Delay>>> = Mutex::new(RefCell::new(None));
 
 // Make external interrupt registers globally available
@@ -32,7 +35,7 @@ static INT: Mutex<RefCell<Option<EXTI>>> = Mutex::new(RefCell::new(None));
 fn main() -> ! {
     if let (Some(p), Some(cp)) = (Peripherals::take(), c_m_Peripherals::take()) {
         let gpiob = p.GPIOB.split();
-        let syscfg = p.SYSCFG;
+        let syscfg = p.SYSCFG_COMP;
         let exti = p.EXTI;
 
         // Enable clock for SYSCFG
@@ -55,7 +58,9 @@ fn main() -> ! {
         let mut delay = Delay::new(cp.SYST, clocks);
 
         // Enable external interrupt for PB1
-        syscfg.exticr1.modify(|_, w| unsafe { w.exti1().bits(1) });
+        syscfg
+            .syscfg_exticr1
+            .modify(|_, w| unsafe { w.exti1().bits(1) });
 
         // Set interrupt request mask for line 1
         exti.imr.modify(|_, w| w.mr1().set_bit());
@@ -103,7 +108,7 @@ fn button_press() {
             led.set_low();
 
             // Clear interrupt
-            exti.pr.modify(|_, w| w.pr1().set_bit());
+            exti.pr.modify(|_, w| w.pif1().set_bit());
         }
     });
 }

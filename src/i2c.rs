@@ -1,4 +1,4 @@
-use stm32f042::{I2C1, RCC};
+use stm32::{I2C1, RCC};
 
 use hal::blocking::i2c::{Write, WriteRead};
 
@@ -75,7 +75,7 @@ impl<PINS> I2c<I2C1, PINS> {
         }
 
         /* Enable I2C signal generator, and configure I2C for 400KHz full speed */
-        i2c.timingr.write(|w| unsafe {
+        i2c.timingr.write(|w| {
             w.presc()
                 .bits(presc)
                 .scldel()
@@ -129,9 +129,9 @@ impl<PINS> WriteRead for I2c<I2C1, PINS> {
     fn write_read(&mut self, addr: u8, bytes: &[u8], buffer: &mut [u8]) -> Result<(), Error> {
         /* Set up current address, we're trying a "read" command and not going to set anything
          * and make sure we end a non-NACKed read (i.e. if we found a device) properly */
-        self.i2c.cr2.modify(|_, w| unsafe {
-            w.sadd1()
-                .bits(addr)
+        self.i2c.cr2.modify(|_, w| {
+            w.sadd()
+                .bits(addr as u16)
                 .nbytes()
                 .bits(bytes.len() as u8)
                 .rd_wrn()
@@ -171,9 +171,9 @@ impl<PINS> WriteRead for I2c<I2C1, PINS> {
 
         /* Set up current address, we're trying a "read" command and not going to set anything
          * and make sure we end a non-NACKed read (i.e. if we found a device) properly */
-        self.i2c.cr2.modify(|_, w| unsafe {
-            w.sadd1()
-                .bits(addr)
+        self.i2c.cr2.modify(|_, w| {
+            w.sadd()
+                .bits(addr as u16)
                 .nbytes()
                 .bits(buffer.len() as u8)
                 .rd_wrn()
@@ -206,9 +206,9 @@ impl<PINS> Write for I2c<I2C1, PINS> {
     fn write(&mut self, addr: u8, bytes: &[u8]) -> Result<(), Error> {
         /* Set up current address, we're trying a "read" command and not going to set anything
          * and make sure we end a non-NACKed read (i.e. if we found a device) properly */
-        self.i2c.cr2.modify(|_, w| unsafe {
-            w.sadd1()
-                .bits(addr)
+        self.i2c.cr2.modify(|_, w| {
+            w.sadd()
+                .bits(addr as u16)
                 .nbytes()
                 .bits(bytes.len() as u8)
                 .rd_wrn()

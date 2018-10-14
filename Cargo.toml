@@ -16,10 +16,10 @@ keywords = [
 license = "0BSD"
 name = "stm32f042-hal"
 repository = "https://github.com/therealprof/stm32f042-hal"
-version = "0.5.2"
+version = "0.6.0"
 
 [dependencies]
-bare-metal = "0.2.3"
+bare-metal = { version = "0.2.3", features = ["const-fn"] }
 cortex-m = "0.5.7"
 cortex-m-rt = "0.6.4"
 nb = "0.1.1"
@@ -32,9 +32,12 @@ version = "0.2.2"
 features = ["unproven"]
 version = "0.2.1"
 
-[dependencies.stm32f042]
-features = ["rt"]
-version = "0.6.3"
+[dependencies.stm32f0]
+features = [
+    "stm32f0x2",
+    "rt",
+]
+version = "0.3.2"
 
 [dev-dependencies]
 ina260 = "0.2.2"

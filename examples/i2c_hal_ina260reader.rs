@@ -12,7 +12,7 @@ extern crate numtoa;
 
 use hal::i2c::*;
 use hal::prelude::*;
-use hal::stm32f042;
+use hal::stm32;
 
 use embedded_hal::blocking::i2c::Write;
 
@@ -43,7 +43,7 @@ const SSD1306_CHARGE_PUMP: u8 = 0x8D;
 
 #[entry]
 fn main() -> ! {
-    if let Some(p) = stm32f042::Peripherals::take() {
+    if let Some(p) = stm32::Peripherals::take() {
         let gpiof = p.GPIOF.split();
         let mut rcc = p.RCC.constrain();
         let _ = rcc.cfgr.freeze();

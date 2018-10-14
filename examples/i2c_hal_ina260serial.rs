@@ -14,7 +14,7 @@ extern crate numtoa;
 use hal::i2c::*;
 use hal::prelude::*;
 use hal::serial::*;
-use hal::stm32f042;
+use hal::stm32;
 
 use numtoa::NumToA;
 
@@ -25,7 +25,7 @@ use cortex_m_rt::entry;
 
 #[entry]
 fn main() -> ! {
-    if let Some(p) = stm32f042::Peripherals::take() {
+    if let Some(p) = stm32::Peripherals::take() {
         let gpiof = p.GPIOF.split();
         let gpioa = p.GPIOA.split();
         let mut clocks = p.RCC.constrain().cfgr.freeze();
@@ -60,12 +60,16 @@ fn main() -> ! {
 
             /* Read and print voltage */
             let voltage = ina260.voltage().unwrap();
-            let _ = tx.write_str(unsafe { core::str::from_utf8_unchecked(voltage.numtoa(10, &mut buffer)) });
+            let _ = tx.write_str(unsafe {
+                core::str::from_utf8_unchecked(voltage.numtoa(10, &mut buffer))
+            });
             let _ = tx.write_str("uV\n\r");
 
             /* Read and print current */
             let current = ina260.current().unwrap();
-            let _ = tx.write_str(unsafe { core::str::from_utf8_unchecked(current.numtoa(10, &mut buffer)) });
+            let _ = tx.write_str(unsafe {
+                core::str::from_utf8_unchecked(current.numtoa(10, &mut buffer))
+            });
             let _ = tx.write_str("uA\n\r");
         }
     }

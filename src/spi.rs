@@ -5,7 +5,7 @@ use nb;
 pub use hal::spi::{Mode, Phase, Polarity};
 use rcc::Clocks;
 
-use stm32f042::{RCC, SPI1};
+use stm32::{RCC, SPI1};
 
 use gpio::gpioa::{PA5, PA6, PA7};
 use gpio::gpiob::{PB3, PB4, PB5};

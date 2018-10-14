@@ -8,7 +8,7 @@ extern crate panic_abort;
 extern crate stm32f042_hal as hal;
 
 use hal::prelude::*;
-use hal::stm32f042;
+use hal::stm32;
 
 #[macro_use(block)]
 extern crate nb;
@@ -19,7 +19,7 @@ use cortex_m_rt::entry;
 
 #[entry]
 fn main() -> ! {
-    if let Some(p) = stm32f042::Peripherals::take() {
+    if let Some(p) = stm32::Peripherals::take() {
         let gpioa = p.GPIOA.split();
         let mut rcc = p.RCC.constrain();
         let clocks = rcc.cfgr.sysclk(48.mhz()).freeze();
