@@ -131,7 +131,7 @@ impl<PINS> WriteRead for I2c<I2C1, PINS> {
          * and make sure we end a non-NACKed read (i.e. if we found a device) properly */
         self.i2c.cr2.modify(|_, w| {
             w.sadd()
-                .bits(addr as u16)
+                .bits(u16::from(addr))
                 .nbytes()
                 .bits(bytes.len() as u8)
                 .rd_wrn()
@@ -173,7 +173,7 @@ impl<PINS> WriteRead for I2c<I2C1, PINS> {
          * and make sure we end a non-NACKed read (i.e. if we found a device) properly */
         self.i2c.cr2.modify(|_, w| {
             w.sadd()
-                .bits(addr as u16)
+                .bits(u16::from(addr))
                 .nbytes()
                 .bits(buffer.len() as u8)
                 .rd_wrn()
@@ -208,7 +208,7 @@ impl<PINS> Write for I2c<I2C1, PINS> {
          * and make sure we end a non-NACKed read (i.e. if we found a device) properly */
         self.i2c.cr2.modify(|_, w| {
             w.sadd()
-                .bits(addr as u16)
+                .bits(u16::from(addr))
                 .nbytes()
                 .bits(bytes.len() as u8)
                 .rd_wrn()
