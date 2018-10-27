@@ -82,7 +82,9 @@ fn main() -> ! {
         nvic.clear_pending(Interrupt::EXTI0_1);
     }
 
-    loop {}
+    loop {
+        continue;
+    }
 }
 
 /* Define an intterupt handler, i.e. function to call when exception occurs. Here if our external

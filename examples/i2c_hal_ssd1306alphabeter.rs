@@ -74,7 +74,9 @@ fn main() -> ! {
         }
     }
 
-    loop {}
+    loop {
+        continue;
+    }
 }
 
 /// Print characters on the display with the embedded 7x7 font

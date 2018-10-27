@@ -60,5 +60,7 @@ fn main() -> ! {
         }
     }
 
-    loop {}
+    loop {
+        continue;
+    }
 }
