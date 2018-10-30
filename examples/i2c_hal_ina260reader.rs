@@ -4,7 +4,7 @@
 extern crate cortex_m;
 extern crate cortex_m_rt;
 extern crate embedded_hal;
-extern crate panic_abort;
+extern crate panic_halt;
 
 extern crate stm32f042_hal as hal;
 
