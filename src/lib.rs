@@ -1,11 +1,13 @@
 #![no_std]
 #![allow(non_camel_case_types)]
-#![feature(never_type)]
 
 extern crate bare_metal;
 extern crate cast;
 extern crate cortex_m;
 pub extern crate embedded_hal as hal;
+
+pub extern crate void;
+pub use void::Void;
 
 #[macro_use(block)]
 pub extern crate nb;

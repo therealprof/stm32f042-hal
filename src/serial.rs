@@ -5,6 +5,7 @@ use core::ptr;
 use hal;
 use hal::prelude::*;
 use nb;
+use void::Void;
 
 use stm32::{RCC, USART1, USART2};
 
@@ -131,9 +132,9 @@ impl hal::serial::Read<u8> for Rx<USART1> {
 }
 
 impl hal::serial::Write<u8> for Tx<USART1> {
-    type Error = !;
+    type Error = Void;
 
-    fn flush(&mut self) -> nb::Result<(), !> {
+    fn flush(&mut self) -> nb::Result<(), Self::Error> {
         // NOTE(unsafe) atomic read with no side effects
         let isr = unsafe { (*USART1::ptr()).isr.read() };
 
@@ -144,7 +145,7 @@ impl hal::serial::Write<u8> for Tx<USART1> {
         }
     }
 
-    fn write(&mut self, byte: u8) -> nb::Result<(), !> {
+    fn write(&mut self, byte: u8) -> nb::Result<(), Self::Error> {
         // NOTE(unsafe) atomic read with no side effects
         let isr = unsafe { (*USART1::ptr()).isr.read() };
 
@@ -225,9 +226,9 @@ impl hal::serial::Read<u8> for Rx<USART2> {
 }
 
 impl hal::serial::Write<u8> for Tx<USART2> {
-    type Error = !;
+    type Error = Void;
 
-    fn flush(&mut self) -> nb::Result<(), !> {
+    fn flush(&mut self) -> nb::Result<(), Self::Error> {
         // NOTE(unsafe) atomic read with no side effects
         let isr = unsafe { (*USART2::ptr()).isr.read() };
 
@@ -238,7 +239,7 @@ impl hal::serial::Write<u8> for Tx<USART2> {
         }
     }
 
-    fn write(&mut self, byte: u8) -> nb::Result<(), !> {
+    fn write(&mut self, byte: u8) -> nb::Result<(), Self::Error> {
         // NOTE(unsafe) atomic read with no side effects
         let isr = unsafe { (*USART2::ptr()).isr.read() };
 
