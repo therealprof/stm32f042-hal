@@ -261,7 +261,7 @@ where
     fn write_str(&mut self, s: &str) -> Result {
         let _ = s
             .as_bytes()
-            .into_iter()
+            .iter()
             .map(|c| block!(self.write(*c)))
             .last();
         Ok(())

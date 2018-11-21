@@ -79,7 +79,7 @@ fn main() -> ! {
         let mut nvic = cp.NVIC;
         nvic.enable(Interrupt::EXTI0_1);
         unsafe { nvic.set_priority(Interrupt::EXTI0_1, 1) };
-        nvic.clear_pending(Interrupt::EXTI0_1);
+        cortex_m::peripheral::NVIC::unpend(Interrupt::EXTI0_1);
     }
 
     loop {
